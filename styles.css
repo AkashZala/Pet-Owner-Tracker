@@ -4,8 +4,15 @@ body {
   background-color: rgb(43, 47, 56);
 }
 
+h1 {
+  text-decoration: underline;
+  text-align: center;
+  padding: .5rem;
+}
+
 main {
   display: flex;
+  margin: .5rem;
 }
 
 main > * {
@@ -14,4 +21,8 @@ main > * {
 
 .owner {
   border: 2px solid mintcream;
+}
+
+#petOwners {
+  text-align: center;
 }

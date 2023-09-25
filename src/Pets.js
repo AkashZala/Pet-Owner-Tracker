@@ -9,22 +9,24 @@ const Pets = ({ owners, pets, setOwner, removeOwner }) => {
                     pets.map(pet => {
                         return (
                             <li key={pet.id}>
-                                {pet.name}
+                                <h3>{pet.name}</h3>
                                 <ul>
                                     {
                                         owners.map(owner => {
                                             return (
-                                                <li key={owner.id} className={owner.id === pet.owner_id ? 'owner' : ''}>
-                                                    {`${owner.name} `}
-                                                    {owner.id === pet.owner_id ? (
-                                                        <button onClick={() => { removeOwner(pet) }}>
-                                                            Remove Owner
-                                                        </button>
-                                                    ) : (
-                                                        <button onClick={() => { setOwner(owner, pet) }}>
-                                                            Set Owner
-                                                        </button>
-                                                    )}
+                                                <li key={owner.id} id='petOwners' className={owner.id === pet.owner_id ? 'owner' : ''}>
+                                                    <h3>
+                                                        {`${owner.name} `}
+                                                        {owner.id === pet.owner_id ? (
+                                                            <button onClick={() => { removeOwner(pet) }}>
+                                                                Remove Owner
+                                                            </button>
+                                                        ) : (
+                                                            <button onClick={() => { setOwner(owner, pet) }}>
+                                                                Set Owner
+                                                            </button>
+                                                        )}
+                                                    </h3>
                                                 </li>
                                             );
                                         })

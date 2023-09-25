@@ -10,8 +10,8 @@ const Owners = ({ owners, pets }) => {
                         const ownedPets = pets.filter(pet => owner.id === pet.owner_id);
                         return (
                             <li key={owner.id}>
-                                {owner.name}
-                                ({ownedPets.length})
+                                <h3>{owner.name} ({ownedPets.length})</h3>
+                                
                             </li>
                         );
                     })
