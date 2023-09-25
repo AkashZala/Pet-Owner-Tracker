@@ -12,7 +12,7 @@ const App = () => {
       setOwners(response.data);
     }
     fetchUsers();
-  },[]);
+  }, []);
 
   useEffect(() => {
     const fetchPets = async () => {
@@ -21,13 +21,27 @@ const App = () => {
     }
     fetchPets();
   }, []);
-  
+
+  const setOwner = async (owner, pet) => {
+    pet = {...pet, owner_id: owner.id}
+    const response = await axios.put(`/api/pets/${pet.id}`, pet);
+    pet = response.data;
+    setPets(pets.map(_pet => _pet.id === pet.id ? pet : _pet));
+  }
+
+  const removeOwner = async (pet) => {
+    pet = {...pet, owner_id: null}
+    const response = await axios.put(`/api/pets/${pet.id}`, pet);
+    pet = response.data;
+    setPets(pets.map(_pet => _pet.id === pet.id ? pet : _pet));
+  }
+
   return (
     <div>
       <h1>Owner-Pet Tracker</h1>
       <main>
         <div>
-          <h2>Owners ({ owners.length })</h2>
+          <h2>Owners ({owners.length})</h2>
           <ul>
             {
               owners.map(owner => {
@@ -43,7 +57,7 @@ const App = () => {
           </ul>
         </div>
         <div>
-          <h2>Pets ({ pets.length })</h2>
+          <h2>Pets ({pets.length})</h2>
           <ul>
             {
               pets.map(pet => {
@@ -54,8 +68,17 @@ const App = () => {
                       {
                         owners.map(owner => {
                           return (
-                            <li key={owner.id} className={ owner.id === pet.owner_id ? 'owner' : ''}>
-                              {owner.name}
+                            <li key={owner.id} className={owner.id === pet.owner_id ? 'owner' : ''}>
+                              {`${owner.name} `}
+                              {owner.id === pet.owner_id ? (
+                                <button onClick={() => {removeOwner(pet)}}>
+                                  Remove Owner
+                                </button>
+                              ) : (
+                                <button onClick={() => {setOwner(owner, pet)}}>
+                                  Set Owner
+                                </button>
+                              )}
                             </li>
                           );
                         })

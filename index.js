@@ -19,7 +19,7 @@ app.get('/styles.css', (req, res) => res.sendFile(styleSheet));
 
 app.get('/api/owners', async (req, res, next) => {
   try {
-    const SQL = `SELECT * FROM owners`;
+    const SQL = `SELECT * FROM owners ORDER BY name`;
     const response = await client.query(SQL, []);
     res.send(response.rows);
   } catch (error) {
@@ -29,7 +29,7 @@ app.get('/api/owners', async (req, res, next) => {
 
 app.get('/api/pets', async (req, res, next) => {
   try {
-    const SQL = `SELECT * FROM pets`;
+    const SQL = `SELECT * FROM pets ORDER BY name`;
     const response = await client.query(SQL, []);
     res.send(response.rows);
   } catch (error) {
