@@ -1,8 +1,9 @@
 const pg = require('pg');
-const client = new pg.Client('postgres://localhost/fullstack_template_db');
+const client = new pg.Client('postgres://localhost/pet_owner_db');
 const express = require('express');
 const app = express();
 const path = require('path');
+app.use(express.json());
 
 const homePage = path.join(__dirname, 'index.html');
 app.get('/', (req, res)=> res.sendFile(homePage));
@@ -16,12 +17,41 @@ app.get('/dist/main.js.map', (req, res)=> res.sendFile(reactSourceMap));
 const styleSheet = path.join(__dirname, 'styles.css');
 app.get('/styles.css', (req, res)=> res.sendFile(styleSheet));
 
+app.get('/api/owners', (req, res, next) => {
+  try {
+    const SQL = `
+
+    `;
+  } catch(error) {
+    next(error)
+  }
+});
+
 const init = async()=> {
   await client.connect();
   console.log('connected to database');
   const SQL = `
-    SQL SETUP AND SEED
+    DROP TABLE IF EXISTS pets;
+    DROP TABLE IF EXISTS owners;
+    CREATE TABLE owners(
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(100) UNIQUE
+    );
+    CREATE TABLE pets(
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(100) UNIQUE,
+      owner_id INTEGER REFERENCES owners(id)
+    );
+      INSERT INTO owners (name) VALUES ('Moe');
+      INSERT INTO owners (name) VALUES ('Lucy');
+      INSERT INTO owners (name) VALUES ('Ethyl');
+      INSERT INTO owners (name) VALUES ('Curly');
+      INSERT INTO pets (name, owner_id) VALUES('Fido', (SELECT id FROM owners WHERE name = 'Moe'));
+      INSERT INTO pets (name, owner_id) VALUES('Rex', (SELECT id FROM owners WHERE name = 'Moe'));
+      INSERT INTO pets (name, owner_id) VALUES('Tiger', (SELECT id FROM owners WHERE name = 'Ethyl'));
+      INSERT INTO pets (name, owner_id) VALUES('Fluffy', (SELECT id FROM owners WHERE name = 'Curly'));
   `;
+  await client.query(SQL);
   console.log('create your tables and seed data');
 
   const port = process.env.PORT || 3000;
