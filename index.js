@@ -6,28 +6,53 @@ const path = require('path');
 app.use(express.json());
 
 const homePage = path.join(__dirname, 'index.html');
-app.get('/', (req, res)=> res.sendFile(homePage));
+app.get('/', (req, res) => res.sendFile(homePage));
 
 const reactApp = path.join(__dirname, 'dist/main.js');
-app.get('/dist/main.js', (req, res)=> res.sendFile(reactApp));
+app.get('/dist/main.js', (req, res) => res.sendFile(reactApp));
 
 const reactSourceMap = path.join(__dirname, 'dist/main.js.map');
-app.get('/dist/main.js.map', (req, res)=> res.sendFile(reactSourceMap));
+app.get('/dist/main.js.map', (req, res) => res.sendFile(reactSourceMap));
 
 const styleSheet = path.join(__dirname, 'styles.css');
-app.get('/styles.css', (req, res)=> res.sendFile(styleSheet));
+app.get('/styles.css', (req, res) => res.sendFile(styleSheet));
 
-app.get('/api/owners', (req, res, next) => {
+app.get('/api/owners', async (req, res, next) => {
   try {
-    const SQL = `
-
-    `;
-  } catch(error) {
+    const SQL = `SELECT * FROM owners`;
+    const response = await client.query(SQL, []);
+    res.send(response.rows);
+  } catch (error) {
     next(error)
   }
 });
 
-const init = async()=> {
+app.get('/api/pets', async (req, res, next) => {
+  try {
+    const SQL = `SELECT * FROM pets`;
+    const response = await client.query(SQL, []);
+    res.send(response.rows);
+  } catch (error) {
+    next(error)
+  }
+});
+
+app.put('/api/pets/:id', async (req, res, next) => {
+  try {
+    const SQL = `
+      UPDATE pets
+      SET owner_id = $1, name = $2
+      WHERE id = $3
+      RETURNING *
+    `;
+    const response = await client.query(SQL, [req.body.owner_id, req.body.name, req.params.id]);
+    res.send(response.rows[0]);
+  } catch(error) {
+    next(error);
+  }
+});
+
+const init = async () => {
   await client.connect();
   console.log('connected to database');
   const SQL = `
@@ -55,7 +80,7 @@ const init = async()=> {
   console.log('create your tables and seed data');
 
   const port = process.env.PORT || 3000;
-  app.listen(port, ()=> {
+  app.listen(port, () => {
     console.log(`listening on port ${port}`);
   });
 }
